@@ -46,19 +46,19 @@ global.client = new Object({
   }
 });
 console.log(chalk.bold.hex("#0FF505").bold("━━━━━━━━━━━━━━━━━━━━━━━━━━━━[ INFO LUNAR🌙 PROJECT ]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
-CFonts.say('LUNAR', {
+CFonts.say('   LUNAR', {
         font: 'block',
-        align: 'center',
+        align: 'left',
   gradient: ['red', 'magenta']
         })
-CFonts.say(`Bot Messenger Created By Lunar Project`, {
+CFonts.say(`        Bot Messenger Created By Luong Truong Khoi With Love`, {
         font: 'console',
-        align: 'center',
+        align: 'left',
         gradient: ['red', 'magenta']
         })
-  CFonts.say('PROJECT', {
+  CFonts.say('    PROJECT    ', {
         font: 'pallet',
-        align: 'center',
+        align: 'left',
   gradient: ['magenta', 'red']
         })
 
