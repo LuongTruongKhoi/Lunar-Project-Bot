@@ -11,7 +11,7 @@ const login = require("Fca-Horizon-Remastered");
 const axios = require("axios");
 const listPackage = JSON.parse(readFileSync('./package.json')).dependencies;
 const listbuiltinModules = require("module").builtinModules; 
-
+const CFonts = require('cfonts');
 global.client = new Object({
     commands: new Map(),
     events: new Map(),
@@ -45,6 +45,22 @@ global.client = new Object({
         }
   }
 });
+console.log(chalk.bold.hex("#0FF505").bold("━━━━━━━━━━━━━━━━━━━━━━━━━━━━[ INFO LUNAR🌙 PROJECT ]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+CFonts.say('LUNAR', {
+        font: 'block',
+        align: 'center',
+  gradient: ['red', 'magenta']
+        })
+CFonts.say(`Bot Messenger Created By Lunar Project`, {
+        font: 'console',
+        align: 'center',
+        gradient: ['red', 'magenta']
+        })
+  CFonts.say('PROJECT', {
+        font: 'pallet',
+        align: 'center',
+  gradient: ['magenta', 'red']
+        })
 
 global.data = new Object({
     threadInfo: new Map(),
@@ -70,7 +86,7 @@ global.configModule = new Object();
 global.moduleData = new Array();
 
 global.language = new Object();
-console.log(chalk.bold.hex("#ff0505").bold("━━━━━━━━━━━━━━━━━━━━━━━━━━━━[ APPSTATE - CONFIG ]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
+console.log(chalk.bold.hex("#0005FF").bold("━━━━━━━━━━━━━━━━━━━━━━━━━━━━[ APPSTATE - CONFIG ]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
 
 global.anti = resolve(process.cwd(),'anti.json')
 //////////////////////////////////////////////////////////

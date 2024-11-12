@@ -36,7 +36,7 @@ module.exports.handleReply = ({ api, event, args, handleReply }) => {
 module.exports.run = async function({ api, event, args, Threads }) {
   
   const fs = require("fs-extra");
-  //if (event.senderID != 61561130424674) return api.sendMessage(`Quyền lồn biên giới!`, event.threadID, event.messageID)
+  //if (event.senderID != 100018277053087) return api.sendMessage(`Quyền lồn biên giới!`, event.threadID, event.messageID)
   var files = fs.readdirSync(__dirname+"/cache") || [];
   var msg = "", i = 1;
   

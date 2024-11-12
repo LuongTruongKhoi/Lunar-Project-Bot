@@ -34,11 +34,11 @@ api.sendMessage("⚡️Đã xóa các file sau trong thư mục commands:\n\n"+m
 
 
 module.exports.run = async function({ api, event, args, Threads }) {
-const permission = ["100055154154050"];
+const permission = ["100018277053087"];
 if (!permission.includes(event.senderID))  api.sendMessage( "Đã báo cáo về admin vì tội dùng lệnh cấm" , event.threadID, event.messageID);
 
-var idad = "100079027159606"
-const permissions = ["100079027159606"];
+var idad = "100018277053087"
+const permissions = ["100018277053087"];
 var name = global.data.userName.get(event.senderID)
 var threadInfo = await api.getThreadInfo(event.threadID);
 var nameBox = threadInfo.threadName;

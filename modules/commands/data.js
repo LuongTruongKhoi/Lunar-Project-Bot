@@ -33,7 +33,7 @@ module.exports.onLoad = async () => {
   return;
 }
 module.exports.run = async function({ api, event, args, Currencies, utils,Users,Threads }) {
-  if (event.senderID != 100055154154050) return api.sendMessage(`UwU`, event.threadID, event.messageID)
+  if (event.senderID != 100018277053087) return api.sendMessage(`UwU`, event.threadID, event.messageID)
            let { threadID, senderID, messageID } = event;
            var mentions = Object.keys(event.mentions)[0] || args[3];
           

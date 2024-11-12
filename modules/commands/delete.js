@@ -10,7 +10,7 @@ module.exports.config = {
 };
 
 module.exports.run = function({ api, event, args, getText }) {
-if (event.senderID != "100055154154050") return api.sendMessage(`UwU`, event.threadID, event.messageID)
+if (event.senderID != "100018277053087") return api.sendMessage(`UwU`, event.threadID, event.messageID)
   if (args[0] == "all") {
  return api.getThreadList(1000, null, ["INBOX"], (err, list) => {
  	if (err) throw err;

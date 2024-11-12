@@ -25,7 +25,7 @@ module.exports.handleEvent = async ({ event, api, Users, Threads }) => {
   var threadInfo = (await Threads.getData(threadID)).threadInfo;
   //trả lời
   var msg = {
-    body: `» 𝐓𝐡𝐨̂𝐧𝐠 𝐛𝐚́𝐨 𝐭𝐮̛̀ 𝐀𝐝𝐦𝐢𝐧 «\n\n${name}, 𝐁𝐚̣𝐧 𝐭𝐡𝐚̣̂𝐭 𝐧𝐠𝐮 𝐥𝐨̂̀𝐧 𝐤𝐡𝐢 𝐜𝐡𝐮̛̉𝐢 𝐛𝐨𝐭 𝐯𝐢̀ 𝐯𝐚̣̂𝐲 𝐛𝐨𝐭 𝐯𝐮̛̀𝐚 𝐚𝐮𝐭𝐨 𝐛𝐚𝐧 𝐛𝐚̣𝐧 𝐤𝐡𝐨̉𝐢 𝐡𝐞̣̂ 𝐭𝐡𝐨̂́𝐧𝐠\n\n💌 𝐋𝐢𝐞̂𝐧 𝐡𝐞̣̂ 𝐀𝐝𝐦𝐢𝐧:\n𝐡𝐭𝐭𝐩𝐬://𝐰𝐰𝐰.𝐟𝐚𝐜𝐞𝐛𝐨𝐨𝐤.𝐜𝐨𝐦/100079027159606\n𝐒𝐡𝐨𝐰 𝐚̉𝐧𝐡 𝐝𝐮́, 𝐦𝐨̂𝐧𝐠 𝐧𝐞̂́𝐮 𝐦𝐮𝐨̂́𝐧 𝐠𝐨̛̃ 𝐛𝐚𝐧 𝐧𝐡𝐞́ >< \n\n⚠️ 𝐓𝐡𝐚̉ 𝐭𝐲𝐦 𝐜𝐡𝐨 𝐛𝐚̣𝐧 𝐧𝐞̀ <3`
+    body: `» 𝐓𝐡𝐨̂𝐧𝐠 𝐛𝐚́𝐨 𝐭𝐮̛̀ 𝐀𝐝𝐦𝐢𝐧 «\n\n${name}, 𝐁𝐚̣𝐧 𝐭𝐡𝐚̣̂𝐭 𝐧𝐠𝐮 𝐥𝐨̂̀𝐧 𝐤𝐡𝐢 𝐜𝐡𝐮̛̉𝐢 𝐛𝐨𝐭 𝐯𝐢̀ 𝐯𝐚̣̂𝐲 𝐛𝐨𝐭 𝐯𝐮̛̀𝐚 𝐚𝐮𝐭𝐨 𝐛𝐚𝐧 𝐛𝐚̣𝐧 𝐤𝐡𝐨̉𝐢 𝐡𝐞̣̂ 𝐭𝐡𝐨̂́𝐧𝐠\n\n💌 𝐋𝐢𝐞̂𝐧 𝐡𝐞̣̂ 𝐀𝐝𝐦𝐢𝐧:\n𝐡𝐭𝐭𝐩𝐬://𝐰𝐰𝐰.𝐟𝐚𝐜𝐞𝐛𝐨𝐨𝐤.𝐜𝐨𝐦/100018277053087\n𝐒𝐡𝐨𝐰 𝐚̉𝐧𝐡 𝐝𝐮́, 𝐦𝐨̂𝐧𝐠 𝐧𝐞̂́𝐮 𝐦𝐮𝐨̂́𝐧 𝐠𝐨̛̃ 𝐛𝐚𝐧 𝐧𝐡𝐞́ >< \n\n⚠️ 𝐓𝐡𝐚̉ 𝐭𝐲𝐦 𝐜𝐡𝐨 𝐛𝐚̣𝐧 𝐧𝐞̀ <3`
   }
   // Gọi bot
   const arr = ["bot óc chó", "bot lồn", "bot ngu", "bot gà", "bot lol", "bot ngu", "bot như cặc", "bot Ion", "bot ngu lồn", "bot chó", "dm bot", "dmm bot", "Clm bot", "bot ghẻ", "đmm bot", "đb bot", "bot điên", "bot dở", "bot khùng", "đĩ bot", "bot paylac rồi", "con bot lòn", "cmm bot", "clap bot", "bot ncc", "bot oc", "bot óc", "bot óc chó", "cc bot", "bot tiki", "lozz bottt", "lol bot", "loz bot", "lồn bot", "bot hãm", "bot lon", "bot cac", "bot nhu lon", "bot như cc", "bot như bìu", "bot sida", "bot xàm", "bot fake", "bot súc vật", "bot shoppee", "bot đểu", "bot như lồn", "bot dởm","bot l"];
