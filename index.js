@@ -7,8 +7,11 @@ const { join, resolve } = require("path");
 const chalk = require("chalk");
 const { execSync } = require('child_process');
 const logger = require("./utils/log.js");
-const login = require("Fca-Horizon-Remastered");
+const login = require("Fca-Horizon-Remastered");//thay fca ở đây
 const axios = require("axios");
+const port = process.env.PORT || 4000;//Sửa port tại đây
+const express = require('express')
+const LunarProject = express()
 const listPackage = JSON.parse(readFileSync('./package.json')).dependencies;
 const listbuiltinModules = require("module").builtinModules; 
 const CFonts = require('cfonts');
@@ -45,6 +48,10 @@ global.client = new Object({
         }
   }
 });
+/*
+Thêm banner cho màu mè
+Credit: Lương Trường Khôi
+*/
 console.log(chalk.bold.hex("#0FF505").bold("━━━━━━━━━━━━━━━━━━━━━━━━━━━━[ INFO LUNAR🌙 PROJECT ]━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"));
 CFonts.say('   LUNAR', {
         font: 'block',
@@ -61,7 +68,11 @@ CFonts.say(`        Bot Messenger Created By Luong Truong Khoi With Love`, {
         align: 'left',
   gradient: ['magenta', 'red']
         })
-
+//Thêm port giúp bạn có thể tùy chỉnh port của mình, phù hợp nếu bạn treo bot bằng onrender hoặc treo nhiều bot khác cùng file
+LunarProject.listen(port, () => {
+    console.log(chalk.bold.hex("#0FF505").bold("《 LUNAR 》 > Port bạn đang chạy là: " + port));
+})
+//Credit to Lunar Team 🌙 (Lương Trường Khôi)
 global.data = new Object({
     threadInfo: new Map(),
     threadData: new Map(),
