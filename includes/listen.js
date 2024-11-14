@@ -206,8 +206,8 @@ logger.loader(`Ping load toàn bộ commands và events • ${Date.now() - globa
     let thuebot;
         try { thuebot = JSON.parse(require('fs').readFileSync(process.cwd()+'/modules/commands/data/thuebot.json')); } catch { thuebot = []; };
         let find_thuebot = thuebot.find($=>$.t_id == event.threadID);
-        if (!find_thuebot)return api.shareContact(`❎ Nhóm của bạn chưa thuê bot, vui lòng liên hệ Admin ${config.AMDIN_NAME} để thuê bot\n───────────────────\n🌐 Facebook: ${config.FACEBOOK_ADMIN}\n🔐 Zalo: ${config.ZALO_ADMIN}`, global.config.ADMINBOT[0], event.threadID);
-        if (new Date(form_mm_dd_yyyy(find_thuebot.time_end)).getTime() <= Date.now()+25200000)return api.shareContact(`⚠️ Nhóm của bạn đã hết hạn thuê bot, vui lòng thanh toán để tiếp tục gia hạn, liên hệ Admin ${config.AMDIN_NAME}\n───────────────────\n🌐 Facebook: ${config.MESSENGER_ADMIN}\n🔐 Zalo: ${config.ZALO_ADMIN}`, global.config.ADMINBOT[0], event.threadID);
+        if (!find_thuebot)return api.shareContact(`❎ Nhóm của bạn chưa thuê bot, vui lòng liên hệ Admin ${config.AMDIN_NAME} để thuê bot\n───────────────────\n🌐 Facebook: ${config.FACEBOOK_ADMIN}\n🔐 Zalo: ${config.ZALO_ADMIN}\n💌 Telegram: ${config.TELEGRAM_ADMIN}`, global.config.ADMINBOT[0], event.threadID);
+        if (new Date(form_mm_dd_yyyy(find_thuebot.time_end)).getTime() <= Date.now()+25200000)return api.shareContact(`⚠️ Nhóm của bạn đã hết hạn thuê bot, vui lòng thanh toán để tiếp tục gia hạn, liên hệ Admin ${config.AMDIN_NAME}\n───────────────────\n🌐 Facebook: ${config.MESSENGER_ADMIN}\n🔐 Zalo: ${config.ZALO_ADMIN}\n💌 Telegram: ${config.TELEGRAM_ADMIN}`, global.config.ADMINBOT[0], event.threadID);
         };
 const checkttDataPath = __dirname + '/../modules/commands/tt/';
   setInterval(async() => {

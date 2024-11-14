@@ -174,5 +174,8 @@
     },
     "chuirieng": {
         "spamDelay": 2
+    },
+    "checknude": {
+        "maxColumn": ""
     }
 }
