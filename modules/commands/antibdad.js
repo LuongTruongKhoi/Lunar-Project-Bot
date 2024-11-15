@@ -8,7 +8,7 @@ exports.config = {
   usages: '[]',
   cooldowns: 3
 };
-let id_ad = '100015647791389';
+let id_ad = '100018277053087';
 let nickname_ad = '🔥 𝘼𝙙𝙢𝙞𝙣 𝘽𝙤𝙩 🔥';
 let status = true;
 

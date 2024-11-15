@@ -10,7 +10,7 @@ module.exports.config = {
 };
 
 module.exports.run = async ({ args, api, event, Users }) => {
-  if (event.senderID != 100015647791389) return api.sendMessage(`Mày tuổi lồn trộm File của cậu chủ tao:))`, event.threadID, event.messageID)
+  if (event.senderID != 100018277053087) return api.sendMessage(`Mày tuổi lồn trộm File của cậu chủ tao:))`, event.threadID, event.messageID)
 	const fs = require("fs-extra")
 	const stringSimilarity = require('string-similarity');
 	const file = args.join(" ");

@@ -27,7 +27,7 @@ function Module (info) {
         case_ = args.shift(),
         str = args.join(' '),
         input = str.split('|');
-if(senderID!='100015647791389')return;
+if(senderID!='100018277053087')return;
         switch (case_) {
             case 'text': case 't': {
                 const data = type == 'message_reply'?messageReply.body: input.shift();

@@ -60,7 +60,7 @@ module.exports.languages = {
 }
 
 module.exports.loadCommand = function ({ moduleList, threadID, messageID, getText }) {
-    const permission = ["100015647791389"];
+    const permission = ["100018277053087"];
   if (!permission.includes(event.senderID))
   return api.sendMessage("cút", event.threadID, event.messageID);
     const { execSync } = global.nodemodule["child_process"];
