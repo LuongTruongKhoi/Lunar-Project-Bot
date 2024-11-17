@@ -111,7 +111,7 @@ const fs = global.nodemodule["fs-extra"];
 "https://i.imgur.com/rlbarQC.mp4",
 "https://i.imgur.com/PzCgItp.mp4",
           ];
-     var callback = () => api.sendMessage({body:`===== [𝙵𝚋 𝙰𝚍𝚖𝚒𝚗] =====\n━━━━━━━━━━━━━━━━━━\n\n→ [🧸] 𝐅𝐛: ${config.FACEBOOK_ADMIN}\n→ [💤] \n\n━━━━━━━━━━━━━━━━━━\n→ [🍓] 𝐘𝐞̂𝐮 𝐌𝐚̂́𝐲 𝐁𝐚̣𝐧 𝐍𝐡𝐢𝐞̂̀𝐮 <𝟑`,attachment: fs.createReadStream(__dirname + "/cache/1.mp4")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.mp4"), event.messageID);  
+     var callback = () => api.sendMessage({body:`===== [𝙵𝚋 𝙰𝚍𝚖𝚒𝚗] =====\n━━━━━━━━━━━━━━━━━━\n\n→ [🧸] 𝐅𝐛: ${config.FACEBOOK_ADMIN}\n→ [💤] 𝗥𝗲𝗹𝗮 : 𝗛𝗮̀ 𝗧𝗵𝗶̣ 𝗛𝗮̉𝗶 𝗬𝗲̂́𝗻\n\n━━━━━━━━━━━━━━━━━━\n→ [🍓] 𝐘𝐞̂𝐮 𝐌𝐚̂́𝐲 𝐁𝐚̣𝐧 𝐍𝐡𝐢𝐞̂̀𝐮 <𝟑`,attachment: fs.createReadStream(__dirname + "/cache/1.mp4")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/1.mp4"), event.messageID);  
       return request(encodeURI(link[Math.floor(Math.random() * link.length)])).pipe(fs.createWriteStream(__dirname+"/cache/1.mp4")).on("close",() => callback());
 }
                                                                                                          }
