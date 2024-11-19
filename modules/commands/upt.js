@@ -1,90 +1,83 @@
-const axios = require('axios');
-const moment = require("moment-timezone");
 const os = require('os');
+const moment = require('moment-timezone');
 const fs = require('fs').promises;
+const nodeDiskInfo = require('node-disk-info');
 
-module.exports.config = {
-  name: "upt",
-  version: "1.0.2",
-  hasPermssion: 0,
-  credits: "DuyVuong, mod by Eien Mojiki",
-  description: "uptime bot",
-  commandCategory: "Hệ thống",
-  cooldowns: 3
-};
-
-function byte2mb(bytes) {
-  const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  let l = 0, n = parseInt(bytes, 10) || 0;
-  while (n >= 1024 && ++l) n = n / 1024;
-  return `${n.toFixed(n < 10 && l > 0 ? 1 : 0)} ${units[l]}`;
-};
-
-module.exports.run = async ({ api, event, Users, Threads }) => {
-  try {
-    // Lấy IP gốc
-    const nwif = os.networkInterfaces();
-    // Đọc file package.json
-    const pack = await fs.readFile('package.json', 'utf8');
-    const packageObj = JSON.parse(pack);
-
-    // Xử lý dependencies và devDependencies
-    const dependencies = packageObj.dependencies ? Object.keys(packageObj.dependencies).length : 0;
-    const devDependencies = packageObj.devDependencies ? Object.keys(packageObj.devDependencies).length : 0;
-
-    // Xử lý các thông tin khác
-    const threadSetting = (await Threads.getData(String(event.threadID))).data || {};
-    const prefix = (threadSetting.hasOwnProperty("PREFIX")) ? threadSetting.PREFIX : global.config.PREFIX;
-    const platform = os.platform();
-    const arch = os.arch();
-    const cpu_model = os.cpus()[0].model;
-    const core = os.cpus().length;
-    const speed = os.cpus()[0].speed;
-    const byte_fm = os.freemem();
-    const byte_tm = os.totalmem();
-    const gb_fm = (byte_fm / (1024 * 1024 * 1024)).toFixed(2);
-    const gb_tm = (byte_tm / (1024 * 1024 * 1024)).toFixed(2);
-    const u_mem = ((byte_tm - byte_fm) / (1024 * 1024 * 1024)).toFixed(2);
-    let gio = moment.tz("Asia/Ho_Chi_Minh").format("HH:mm:ss || D/MM/YYYY");
-    const time = process.uptime(),
-      hours = Math.floor(time / (60 * 60)),
-      minutes = Math.floor((time % (60 * 60)) / 60),
-      seconds = Math.floor(time % 60);
-    const timeStart = Date.now();
-    let name = await Users.getNameUser(event.senderID);
-    let threadInfo = await api.getThreadInfo(event.threadID);
-    let threadName = threadInfo.threadName;
-
-    // Gửi tin nhắn với thông tin đã xử lý
-    const uptimeMessage = `══════╗ ⇲  Uptime  ⇱ ╚══════
-
- → · Bây giờ là: ${gio}
- → · Thời gian đã hoạt động: ${hours} giờ ${minutes} phút ${seconds} giây.
- → · Dấu lệnh: ${prefix}
- → · Phiên bản: 3.3.1
- → · Tổng nhóm: ${global.data.allThreadID.length}
- → · Tổng người dùng: ${global.data.allUserID.length}
- → · Thông tin hệ thống:
-  - Hệ điều hành: ${platform}
-  - Kiểu Arch: ${arch}
-  - CPU: ${core} core(s) - ${cpu_model} - ${speed}MHz
-  - Số Package và Dev Package: ${dependencies} và ${devDependencies}
-  - Dung lượng trống: ${gb_fm}GB (Đã dùng ${u_mem}GB trên tổng ${gb_tm}GB)
- → · IP Server: ${nwif['eth0'][0].address} - ${nwif['eth0'][0].family}
- → · Ping : ${Date.now() - timeStart}ms
- → · Tình trạng: ${
-      Date.now() - timeStart < 100
-        ? 'Rất ổn định'
-        : Date.now() - timeStart < 300
-          ? 'Khá ổn định'
-          : 'Khá chậm'
+module.exports = {
+    config: {
+        name: "upt",
+        version: "2.1.4", // Updated version for changes
+        hasPermission: 0,
+        usePrefix: false,
+        credits: "Vtuan rmk Niio-team",
+        description: "Hiển thị thông tin hệ thống của bot!",
+        commandCategory: "Tiện ích",
+        usages: "[prefix]upt",
+        cooldowns: 5
+    },
+    run: async ({ api, event, Users }) => {
+        const ping = Date.now();
+        async function getDependencyCount() {
+            try {
+                const packageJsonString = await fs.readFile('package.json', 'utf8');
+                const packageJson = JSON.parse(packageJsonString);
+                const depCount = Object.keys(packageJson.dependencies).length;
+                return depCount;
+            } catch (error) {
+                console.error('❎ Không thể đọc file package.json:', error);
+                return -1;
+            }
+        }
+        function getStatusByPing(pingReal) {
+            if (pingReal < 200) {
+                return 'mượt';
+            } else if (pingReal < 800) {
+                return 'trung bình';
+            } else {
+                return 'mượt';
+            }
+        }
+        function getPrimaryIP() {
+            const interfaces = os.networkInterfaces();
+            for (let iface of Object.values(interfaces)) {
+                for (let alias of iface) {
+                    if (alias.family === 'IPv4' && !alias.internal) {
+                        return alias.address;
+                    }
+                }
+            }
+            return '127.0.0.1';
+        }
+        const totalMemory = os.totalmem();
+        const freeMemory = os.freemem();
+        const usedMemory = totalMemory - freeMemory;
+        const uptime = process.uptime();
+        const uptimeHours = Math.floor(uptime / (60 * 60));
+        const uptimeMinutes = Math.floor((uptime % (60 * 60)) / 60);
+        const uptimeSeconds = Math.floor(uptime % 60);
+        let name = await Users.getNameUser(event.senderID);
+        const dependencyCount = await getDependencyCount();
+        const botStatus = getStatusByPing(ping);
+        const primaryIp = getPrimaryIP();
+        try {
+            const disks = await nodeDiskInfo.getDiskInfo();
+            const firstDisk = disks[0] || {}; // Use the first disk, or an empty object if no disks are found
+            const usedSpace = firstDisk.blocks - firstDisk.available;
+            function convertToGB(bytes) {
+                if (bytes === undefined) return 'N/A'; // Handle undefined value
+                const GB = bytes / (1024 * 1024 * 1024);
+                return GB.toFixed(2) + 'GB';
+            }
+            const pingReal = Date.now() - ping
+            const replyMsg = `⏰ Bây giờ là: ${moment().tz('Asia/Ho_Chi_Minh').format('HH:mm:ss')} | ${moment().tz('Asia/Ho_Chi_Minh').format('DD/MM/YYYY')}
+⏱️ Thời gian đã hoạt động: ${uptimeHours.toString().padStart(2, '0')}:${uptimeMinutes.toString().padStart(2, '0')}:${uptimeSeconds.toString().padStart(2, '0')}
+🔣 Tình trạng bot: ${botStatus}
+🛜 Ping: ${pingReal}ms
+👤 Yêu cầu bởi: ${name}
+  `.trim();
+            api.sendMessage({body:replyMsg,attachment: global.a.splice(0, 1)},  event.threadID, event.messageID);
+        } catch (error) {
+            console.error('❎ Error getting disk information:', error.message);
+        }
     }
--> · Yêu cầu bởi: ${name} - ${threadName || 'Cuộc trò chuyện riêng với bot'}`;
-
-    api.sendMessage(uptimeMessage, event.threadID, event.messageID);
-
-  } catch (error) {
-    // Xử lý lỗi
-    api.sendMessage(`Error: ${error}`, event.threadID);
-  }
 };

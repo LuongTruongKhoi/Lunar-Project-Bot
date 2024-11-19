@@ -1,6 +1,6 @@
 language = "bash"
-run = "npm start"
-entrypoint = "main.sh"
+run = "npm run start"
+modules = ["nodejs-20", "nix", "bash"]
 
 [languages]
 
@@ -11,10 +11,10 @@ pattern = "**/{*.sh,*.bash}"
 start = "bash-language-server start"
 
 [nix]
-channel = "stable-22_11"
+channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "bash main.sh"]
+run = ["sh", "-c", "npm run start"]
 
 [[ports]]
 localPort = 80

@@ -1,176 +1,272 @@
+const fs = require('fs');
+const path = require('path');
+const { createCanvas } = require('canvas');
+
 module.exports.config = {
-    name: "menu",
-    version: "1.0.0",
-    hasPermssion: 0,
-    credits: "",
-    description: "Hướng dẫn cho người mới",
-    usages: "[all/-a] [số trang]",
-    commandCategory: "Dành cho người dùng",
-    cooldowns: 5
+  name: "menu",
+  usePrefix: true,
+  version: "6.0.0",
+  hasPermssion: 0,
+  credits: "Tiến",
+  description: "Hiển thị danh sách lệnh hoặc thông tin chi tiết về lệnh",
+  commandCategory: "Tiện ích",
+  usages: "menu [tên lệnh | danh mục | all]",
+  cooldowns: 5
 };
 
-module.exports.handleReply = async function ({ api, event, handleReply }) {
-    let num = parseInt(event.body.split(" ")[0].trim());
-    (handleReply.bonus) ? num -= handleReply.bonus : num;
-    let msg = "";
-    let data = handleReply.content;
-    let check = false;
-    if (isNaN(num)) msg = "𝗛𝗮̃𝘆 𝗻𝗵𝐚̣̂𝗽 𝟭 𝗰𝗼𝗻 𝘀𝗼̂́ 𝗺𝗮̀ 𝗯𝗮̣𝗻 𝗺𝘂𝗼̂́𝗻";
-    else if (num > data.length || num <= 0) msg = "𝗦𝗼̂́ 𝗯𝗮̣𝗻 𝗰𝗵𝗼̣𝗻 𝗸𝗵𝗼̂𝗻𝗴 𝗻𝗮̆̀𝗺 𝘁𝗿𝗼𝗻𝗴 𝗱𝗮𝗻𝗵 𝘀𝗮́𝗰𝗵, 𝘃𝘂𝗶 𝗹𝗼̀𝗻𝗴 𝘁𝗵𝘂̛̉ 𝗹𝗮̣𝗶";
-    else {
-        const { commands } = global.client;
-        let dataAfter = data[num-=1];
-        if (handleReply.type == "cmd_info") {
-            let command_config = commands.get(dataAfter).config;
-            msg += ` 『  ${command_config.commandCategory.toUpperCase()}   』   \n`;
-            msg += `\n→ Tên lệnh: ${dataAfter}`;
-            msg += `\n→ Mô tả: ${command_config.description}`;
-            msg += `\n→ Cách sử dụng: ${(command_config.usages) ? command_config.usages : ""}`;
-            msg += `\n→ Thời gian chờ: ${command_config.cooldowns || 5}s`;
-            msg += `\n→ Quyền hạn: ${(command_config.hasPermssion == 0) ? "Người dùng" : (command_config.hasPermssion == 1) ? "Quản trị viên nhóm" : "Quản trị viên bot"}`;
-      msg += `\n✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏`
-            msg += `\n\n[💓] 𝘁𝗵𝗮𝗻𝗸𝘀 𝗳𝗼𝗿 𝘂𝘀𝗶𝗻𝗴 𝘇𝗶𝗻'𝘀 𝗯𝗼𝘁`;
-        } else {
-            check = true;
-            let count = 0;
-            msg += `→ ${dataAfter.group.toUpperCase()} \n`;
 
-            dataAfter.cmds.forEach(item => {
-                msg += `\n ${count+=1}. → ${item}: ${commands.get(item).config.description}`;
-            })
-            msg += "\n\n╭──────╮\n    𝗥𝗘𝗣𝗟𝗬 \n╰──────╯ [💓] 𝘁𝗶𝗻 𝗻𝗵𝗮̆́𝗻 𝘁𝗵𝗲𝗼 𝘀𝗼̂́ đ𝗲̂̉ 𝘅𝗲𝗺 𝘁𝗵𝗼̂𝗻𝗴 𝘁𝗶𝗻 𝗰𝗵𝗶 𝘁𝗶𝗲̂́𝘁 𝗹𝗲̣̂𝗻𝗵 𝘃𝗮̀ 𝗰𝗮́𝗰𝗵 𝘀𝘂̛̉ 𝗱𝘂̣𝗻𝗴 𝗹𝗲̣̂𝗻𝗵 ";
-        }
-    }
-    const axios = require('axios');
-    const fs = require('fs-extra');
-    const img = ["https://images7.alphacoders.com/133/1330265.png"]
-/*    const img = [
-        "https://i.imgur.com/3eieNQt.gif",
-        "https://i.imgur.com/vekcCyz.gif",
-        "https://i.imgur.com/qwfQeDB.gif",
-        "https://i.imgur.com/Mn4AFfo.gif",
-        "https://i.imgur.com/s6ZgMkc.gif",
-    ]
-*/
-//    var path = __dirname + "/cache/menu.gif"
-    var path = __dirname + "/cache/menu.png"
-    var rdimg = img[Math.floor(Math.random() * img.length)]; 
-    const imgP = []
-    let dowloadIMG = (await axios.get(rdimg, { responseType: "arraybuffer" } )).data; 
-    fs.writeFileSync(path, Buffer.from(dowloadIMG, "utf-8") );
-    imgP.push(fs.createReadStream(path))
-    var msgg = {body: msg, attachment: imgP}
-    api.unsendMessage(handleReply.messageID);
-    return api.sendMessage(msgg, event.threadID, (error, info) => {
-        if (error) console.log(error);
-        if (check) {
-            global.client.handleReply.push({
-                type: "cmd_info",
-                name: this.config.name,
-                messageID: info.messageID,
-                content: data[num].cmds
-            })
-        }
-    }, event.messageID);
-}
+const createCommandImage = (textLines) => {
+  const canvas = createCanvas(800, textLines.length * 30 + 20);
+  const ctx = canvas.getContext('2d');
 
-module.exports.run = async function({ api, event, args }) {
-    const { commands } = global.client;
-    const { threadID, messageID } = event;
-    const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
-    const prefix = (threadSetting.hasOwnProperty("PREFIX")) ? threadSetting.PREFIX : global.config.PREFIX;
-    const axios = require('axios');
-    const fs = require('fs-extra');
-    const imgP = []
-    const img = [
-        "https://i.imgur.com/3eieNQt.gif",
-        "https://i.imgur.com/vekcCyz.gif",
-        "https://i.imgur.com/qwfQeDB.gif",
-        "https://i.imgur.com/Mn4AFfo.gif",
-        "https://i.imgur.com/s6ZgMkc.gif",
-    ]
-    var path = __dirname + "/cache/menu.gif"
-    var rdimg = img[Math.floor(Math.random() * img.length)]; 
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    let dowloadIMG = (await axios.get(rdimg, { responseType: "arraybuffer" } )).data; 
-        fs.writeFileSync(path, Buffer.from(dowloadIMG, "utf-8") );
-        imgP.push(fs.createReadStream(path))
-    const command = commands.values();
-    var group = [], msg = "=====『 𝗠𝗘𝗡𝗨 𝗖𝗢𝗠𝗠𝗔𝗡𝗗 』=====\n";
-    let check = true, page_num_input = "";
-    let bonus = 0;
+  ctx.fillStyle = '#000000';
+  ctx.font = '20px Arial';
+  let y = 30;
+  textLines.forEach(line => {
+    ctx.fillText(line, 20, y);
+    y += 30;
+  });
 
-    for (const commandConfig of command) {
-        if (!group.some(item => item.group.toLowerCase() == commandConfig.config.commandCategory.toLowerCase())) group.push({ group: commandConfig.config.commandCategory.toLowerCase(), cmds: [commandConfig.config.name] });
-        else group.find(item => item.group.toLowerCase() == commandConfig.config.commandCategory.toLowerCase()).cmds.push(commandConfig.config.name);
+  return canvas.toBuffer('image/png');
+};
+
+module.exports.run = async function({ api, event, args, Users }) {
+  const commandsPath = path.resolve(__dirname, '..', 'commands');
+  const senderID = event.senderID;
+  const userPermission = (await Users.getData(senderID)).data.permission || 0;
+
+  try {
+    const files = await fs.promises.readdir(commandsPath);
+    let commandFiles = files.filter(file => file.endsWith('.js'));
+
+    if (commandFiles.length === 0) {
+      return api.sendMessage("Không có lệnh nào trong thư mục commands.", event.threadID, event.messageID);
     }
 
-    if (args[0] && ["all", "-a"].includes(args[0].trim())) {
-        let all_commands = [];
-        group.forEach(commandGroup => {
-            commandGroup.cmds.forEach(item => all_commands.push(item));
-        });
-        let page_num_total = Math.ceil(all_commands.length / 2222222222);
-        if (args[1]) {
-            check = false;
-            page_num_input = parseInt(args[1]);
-            if (isNaN(page_num_input)) msg = "𝗩𝘂𝗶 𝗹𝗼̀𝗻𝗴 𝗰𝗵𝗼̣𝗻 𝘀𝗼̂́";
-            else if (page_num_input > page_num_total || page_num_input <= 0) msg = "𝗦𝗼̂́ 𝗯𝗮̣𝗻 𝗰𝗵𝗼̣𝗻 𝗸𝗵𝗼̂𝗻𝗴 𝗻𝗮̆̀𝗺 𝘁𝗿𝗼𝗻𝗴 𝗱𝗮𝗻𝗵 𝘀𝗮́𝗰𝗵, 𝘃𝘂𝗶 𝗹𝗼̀𝗻𝗴 𝘁𝗵𝘂̛̉ 𝗹𝗮̣𝗶";
-            else check = true;
-        }
-        if (check) {
-        index_start = (page_num_input) ? (page_num_input * 350) - 350 : 0;
-            bonus = index_start;
-            index_end = (index_start + 350 > all_commands.length) ? all_commands.length : index_start + 350;
-            all_commands = all_commands.slice(index_start, index_end);
-            all_commands.forEach(e => {
-                msg += `\n${index_start+=1}. → ${e}: ${commands.get(e).config.description}`;
-            })
-            msg += `\n\n→ [📖] 𝗧𝗿𝗮𝗻𝗴 ${page_num_input || 1}/${page_num_total}`;
-            msg += `\n→ [💗] Đ𝗲̂̉ 𝘅𝗲𝗺 𝗰𝗮́𝗰 𝘁𝗿𝗮𝗻𝗴 𝗸𝗵𝗮́𝗰, 𝗱𝘂̀𝗻𝗴: ${prefix}𝗺𝗲𝗻𝘂 [-𝗮,𝗮𝗹𝗹] [𝘀𝗼̂́ 𝘁𝗿𝗮𝗻𝗴]`;
-      msg += `\n→ [🎀] 𝗕𝗮̣𝗻 𝗰𝗼́ 𝘁𝗵𝗲̂̉ 𝗱𝘂̀𝗻𝗴 ${prefix}𝗵𝗲𝗹𝗽, ${prefix}𝗵𝗲𝗹𝗽 𝗮𝗹𝗹 đ𝗲̂̉ 𝘅𝗲𝗺 𝘁𝐚̂́𝘁 𝗰𝗮̉ 𝗹𝗲̣̂𝗻𝗵\n\n╭───${global.client.commands.size}───╮\n
-.\n╰───Lệnh───╯\n [💓] 𝗥𝗘𝗣𝗟𝗬 𝘁𝗶𝗻 𝗻𝗵𝗮̆́𝗻 𝘁𝗵𝗲𝗼 𝘀𝗼̂́ đ𝗲̂̉ 𝘅𝗲𝗺 𝘁𝗵𝗼̂𝗻𝗴 𝘁𝗶𝗻 𝗰𝗵𝗶 𝘁𝗶𝗲̂́𝘁 𝗹𝗲̣̂𝗻𝗵 𝘃𝗮̀ 𝗰𝗮́𝗰𝗵 𝘀𝘂̛̉ 𝗱𝘂̣𝗻𝗴 𝗹𝗲̣̂𝗻𝗵\n `
-            msg += "🧸🧸🧸🧸🧸🧸🧸🧸🧸🧸";
-        }
-        var msgg = {body: msg, attachment: imgP}
-        return api.sendMessage(msgg, threadID, (error, info) => {
-            if (check) {
-                global.client.handleReply.push({
-                    type: "cmd_info",
-                    bonus: bonus,
-                    name: this.config.name,
-                    messageID: info.messageID,
-                    content: all_commands
-                })
-            }
-        }, messageID)
-    }
+   
+    commandFiles = await Promise.all(commandFiles.map(async file => {
+      try {
+        const command = require(path.join(commandsPath, file));
+        const stats = await fs.promises.stat(path.join(commandsPath, file));
+        return {
+          name: file.replace('.js', ''),
+          config: command.config,
+          lastUpdated: stats.mtime
+        };
+      } catch {
+        return {
+          name: file.replace('.js', ''),
+          config: {
+            description: 'Lỗi tải lệnh',
+            credits: 'Không rõ',
+            version: 'Không rõ',
+            usages: 'Không rõ',
+            cooldowns: 0,
+            hasPermssion: 0,
+            commandCategory: 'Khác'
+          },
+          lastUpdated: null
+        };
+      }
+    }));
 
-    let page_num_total = Math.ceil(group.length / 350);
-    if (args[0]) {
-        check = false;
-        page_num_input = parseInt(args[0]);
-        if (isNaN(page_num_input)) msg = "𝗩𝘂𝗶 𝗹𝗼̀𝗻𝗴 𝗰𝗵𝗼̣𝗻 𝘀𝗼̂́";
-        else if (page_num_input > page_num_total || page_num_input <= 0) msg = "𝗦𝗼̂́ 𝗯𝗮̣𝗻 𝗰𝗵𝗼̣𝗻 𝗸𝗵𝗼̂𝗻𝗴 𝗻𝗮̆̀𝗺 𝘁𝗿𝗼𝗻𝗴 𝗱𝗮𝗻𝗵 𝘀𝗮́𝗰𝗵, 𝘃𝘂𝗶 𝗹𝗼̀𝗻𝗴 𝘁𝗵𝘂̛̉ 𝗹𝗮̣𝗶";
-        else check = true;
-    }
-    if (check) {
-        index_start = (page_num_input) ? (page_num_input * 350) - 350 : 0;
-        bonus = index_start;
-        index_end = (index_start + 350 > group.length) ? group.length : index_start + 350;
-        group = group.slice(index_start, index_end);
-        group.forEach(commandGroup => msg += `\n${index_start+=1}. → ${commandGroup.group.toUpperCase()} `);
-        msg += `\n\n→ [📖] 𝗧𝗿𝗮𝗻𝗴 ${page_num_input || 1}/${page_num_total} `;
-        msg += `\n→ [🎀] Đ𝗲̂̉ 𝘅𝗲𝗺 𝗰𝗮́𝗰 𝘁𝗿𝗮𝗻𝗴 𝗸𝗵𝗮́𝗰, 𝗱𝘂̀𝗻𝗴: ${prefix}𝗺𝗲𝗻𝘂 [𝘀𝗼̂́ 𝘁𝗿𝗮𝗻𝗴]`;
-    msg += `\n→ [🧸] 𝗕𝗮̣𝗻 𝗰𝗼́ 𝘁𝗵𝗲̂̉ 𝗱𝘂̀𝗻𝗴 ${prefix}𝗺𝗲𝗻𝘂 𝗮𝗹𝗹 đ𝗲̂̉ 𝘅𝗲𝗺 𝘁𝐚̂́𝘁 𝗰𝗮̉ 𝗹𝗲̣̂𝗻𝗵`
-        msg += `\n╭─────╮\n ${global.client.commands.size} 𝗟𝗲̣̂𝗻𝗵     \n╰─────╯ \n [💓] 𝗥𝗲𝗽𝗹𝘆 𝘁𝗶𝗻 𝗻𝗵𝗮̆́𝗻 𝗻𝗮̀𝘆 𝘁𝗵𝗲𝗼 𝘀𝗼̂́ đ𝗲̂̉ 𝘅𝗲𝗺 𝗰𝗮́𝗰 𝗹𝗲̣̂𝗻𝗵 𝘁𝗵𝗲𝗼 𝗽𝗵𝐚̂𝗻 𝗹𝗼𝗮̣𝗶 𝗯𝗼𝘁 đ𝘂̛𝗼̛̣𝗰 đ𝗶𝗲̂̀𝘂 𝗵𝗮̀𝗻𝗵 𝗯𝗼̛̉𝗶 Tiến `;	}
-    var msgg = {body: msg, attachment: imgP}
-    return api.sendMessage(msgg, threadID, async (error, info) => {
+    commandFiles = commandFiles.filter(cmd => userPermission >= cmd.config.hasPermssion);
+
+    if (args.length === 0) {
+      let categorizedCommands = {};
+      commandFiles.forEach((cmd, idx) => {
+        const category = cmd.config.commandCategory || 'Khác';
+        if (!categorizedCommands[category]) categorizedCommands[category] = [];
+        categorizedCommands[category].push({ ...cmd, index: idx + 1 });
+      });
+
+      let menuText = "Danh mục lệnh:\n\n";
+      Object.keys(categorizedCommands).forEach((category, idx) => {
+        menuText += `${idx + 1}. ${category}: ${categorizedCommands[category].length} lệnh\n`;
+      });
+
+      menuText += "\nTrả lời tin nhắn với số thứ tự hoặc tên danh mục để xem chi tiết, hoặc gõ 'all' để xem tất cả lệnh.";
+
+      const textLines = menuText.split('\n');
+      const buffer = createCommandImage(textLines);
+      fs.writeFileSync(path.resolve(__dirname, 'menu.png'), buffer);
+
+      return api.sendMessage({ body: "Danh mục lệnh:", attachment: fs.createReadStream(path.resolve(__dirname, 'menu.png')) }, event.threadID, (err, info) => {
+        if (err) return console.error(err);
         global.client.handleReply.push({
+          name: this.config.name,
+          messageID: info.messageID,
+          author: senderID,
+          categorizedCommands: categorizedCommands
+        });
+      });
+
+    } else {
+      const input = args.join(" ").toLowerCase();
+
+      if (input === 'all') {
+        let allCommandsText = "Tất cả các lệnh:\n\n";
+        commandFiles.forEach((cmd, idx) => {
+          allCommandsText += `${idx + 1}. ${cmd.name}: ${cmd.config.description || 'Không có mô tả'}\n`;
+        });
+
+        const textLines = allCommandsText.split('\n');
+        const chunks = [];
+        const chunkSize = 20;
+
+        for (let i = 0; i < textLines.length; i += chunkSize) {
+          chunks.push(textLines.slice(i, i + chunkSize));
+        }
+
+        const attachments = [];
+        chunks.forEach((chunk, idx) => {
+          const buffer = createCommandImage(chunk);
+          const filePath = path.resolve(__dirname, `allCommands_${idx + 1}.png`);
+          fs.writeFileSync(filePath, buffer);
+          attachments.push(fs.createReadStream(filePath));
+        });
+
+        return api.sendMessage({ body: "Tất cả các lệnh:", attachment: attachments }, event.threadID, (err, info) => {
+          if (err) return console.error(err);
+          global.client.handleReply.push({
             name: this.config.name,
-            bonus: bonus,
             messageID: info.messageID,
-            content: group
-        })
+            author: senderID,
+            commandsList: commandFiles
+          });
+        });
+      }
+
+      const command = commandFiles.find(cmd => cmd.name.toLowerCase() === input);
+
+      if (command) {
+        let detailedInfo = `Thông tin lệnh ${command.name}:\n\n`;
+        detailedInfo += `- Mô tả: ${command.config.description || 'Không có mô tả'}\n`;
+        detailedInfo += `- Tác giả: ${command.config.credits || 'Không rõ'}\n`;
+        detailedInfo += `- Phiên bản: ${command.config.version || 'Không rõ'}\n`;
+        detailedInfo += `- Cách dùng: ${command.config.usages || 'Không có thông tin'}\n`;
+        detailedInfo += `- Thời gian hồi: ${command.config.cooldowns || '0'} giây\n`;
+        detailedInfo += `- Cập nhật lần cuối: ${command.lastUpdated ? command.lastUpdated.toLocaleString() : 'Không rõ'}\n`;
+
+        const textLines = detailedInfo.split('\n');
+        const buffer = createCommandImage(textLines);
+        fs.writeFileSync(path.resolve(__dirname, `${command.name}.png`), buffer);
+
+        return api.sendMessage({ body: `Thông tin lệnh ${command.name}:`, attachment: fs.createReadStream(path.resolve(__dirname, `${command.name}.png`)) }, event.threadID, event.messageID);
+      }
+
+      const categoryCommands = commandFiles.filter(cmd => cmd.config.commandCategory && cmd.config.commandCategory.toLowerCase() === input);
+
+      if (categoryCommands.length === 0) {
+        return api.sendMessage("Không tìm thấy lệnh hoặc danh mục.", event.threadID, event.messageID);
+      }
+
+      let commandsListText = `Các lệnh trong danh mục ${input}:\n\n`;
+      categoryCommands.forEach((cmd, idx) => {
+        commandsListText += `${idx + 1}. ${cmd.name}: ${cmd.config.description || 'Không có mô tả'}\n`;
+      });
+
+      const textLines = commandsListText.split('\n');
+      const chunks = [];
+      const chunkSize = 20;
+
+      for (let i = 0; i < textLines.length; i += chunkSize) {
+        chunks.push(textLines.slice(i, i + chunkSize));
+      }
+
+      const attachments = [];
+      chunks.forEach((chunk, idx) => {
+        const buffer = createCommandImage(chunk);
+        const filePath = path.resolve(__dirname, `categoryCommands_${input}_${idx + 1}.png`);
+        fs.writeFileSync(filePath, buffer);
+        attachments.push(fs.createReadStream(filePath));
+      });
+
+      return api.sendMessage({ body: `Các lệnh trong danh mục ${input}:`, attachment: attachments }, event.threadID, event.messageID);
+    }
+  } catch (err) {
+    console.error(err);
+    return api.sendMessage("Đã xảy ra lỗi khi xử lý lệnh", event.threadID, event.messageID);
+  }
+};
+
+module.exports.handleReply = async function({ api, event, handleReply }) {
+  const { threadID, messageID, senderID, body } = event;
+
+  if (handleReply.author !== senderID) return;
+
+  const input = body.trim();
+  const index = parseInt(input);
+
+
+  let categoryName = input.toLowerCase();
+  let categoryCommands = null;
+  
+
+  if (!isNaN(index)) {
+    if (handleReply.commandsList && index > 0 && index <= handleReply.commandsList.length) {
+      const command = handleReply.commandsList[index - 1];
+
+      
+      let detailedInfo = `Thông tin lệnh ${command.name}:\n\n`;
+      detailedInfo += `- Mô tả: ${command.config.description || 'Không có mô tả'}\n`;
+      detailedInfo += `- Tác giả: ${command.config.credits || 'Không rõ'}\n`;
+      detailedInfo += `- Phiên bản: ${command.config.version || 'Không rõ'}\n`;
+      detailedInfo += `- Cách dùng: ${command.config.usages || 'Không rõ'}\n`;
+      detailedInfo += `- Thời gian hồi: ${command.config.cooldowns || '0'} giây\n`;
+      detailedInfo += `- Cập nhật lần cuối: ${command.lastUpdated ? command.lastUpdated.toLocaleString() : 'Không rõ'}\n`;
+
+      const textLines = detailedInfo.split('\n');
+      const buffer = createCommandImage(textLines);
+      fs.writeFileSync(path.resolve(__dirname, `${command.name}.png`), buffer);
+
+      return api.sendMessage({
+        body: `Thông tin lệnh ${command.name}:`,
+        attachment: fs.createReadStream(path.resolve(__dirname, `${command.name}.png`))
+      }, threadID, messageID);
+    } else if (index > 0 && index <= Object.keys(handleReply.categorizedCommands).length) {
+      categoryName = Object.keys(handleReply.categorizedCommands)[index - 1].toLowerCase();
+    }
+  }
+
+ 
+  for (const [key, value] of Object.entries(handleReply.categorizedCommands)) {
+    if (key.toLowerCase() === categoryName) {
+      categoryCommands = value;
+      break;
+    }
+  }
+
+  if (categoryCommands) {
+    let commandsListText = `Các lệnh trong danh mục ${categoryName}:\n\n`;
+    categoryCommands.forEach((cmd, idx) => {
+      commandsListText += `${idx + 1}. ${cmd.name}: ${cmd.config.description || 'Không có mô tả'}\n`;
     });
-}
+
+    const textLines = commandsListText.split('\n');
+    const chunks = [];
+    const chunkSize = 20;
+
+    for (let i = 0; i < textLines.length; i += chunkSize) {
+      chunks.push(textLines.slice(i, i + chunkSize));
+    }
+
+    const attachments = [];
+    chunks.forEach((chunk, idx) => {
+      const buffer = createCommandImage(chunk);
+      const filePath = path.resolve(__dirname, `categoryCommands_${categoryName}_${idx + 1}.png`);
+      fs.writeFileSync(filePath, buffer);
+      attachments.push(fs.createReadStream(filePath));
+    });
+
+    return api.sendMessage({
+      body: `Các lệnh trong danh mục ${categoryName}:`,
+      attachment: attachments
+    }, threadID, messageID);
+  }
+
+  return api.sendMessage("Không tìm thấy danh mục hoặc lệnh nào.", threadID, messageID);
+};
