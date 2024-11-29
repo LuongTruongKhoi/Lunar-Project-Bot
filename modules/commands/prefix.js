@@ -1,44 +1,71 @@
 module.exports.config = {
   name: "prefix",
-  version: "1.0.0",
+  version: "1.2.0",
   hasPermssion: 0,
-  credits: "lemon",
+  credits: "ManhG",
   description: "Xem prefix của BOT",
-  commandCategory: "Thành Viên",
+  commandCategory: "Admin",
   usages: "",
   cooldowns: 5,
 };
 
-module.exports.handleEvent = async ({ event, api, Threads }) => {
-  var os = require("os");
-	var cpus = os.cpus();
-	var chips;
-	for (var i of cpus) chips = i.model, speed = i.speed;
-	if (cpus == undefined);
-  var { threadID, messageID, body, senderID } = event;
-  //if (senderID == global.data.botID) return;
-  if ((this.config.credits) != "lemon") { return api.sendMessage(`Sửa credits con mẹ mày à ?`, threadID, messageID)}
-  function out(data) {
-    api.sendMessage(data, threadID, messageID)
+module.exports.handleEvent = async ({ event, api, Threads, Users }) => {
+  const { threadID, messageID, body, senderID } = event;
+  if (senderID == global.data.botID) return; // Ngăn bot tự phản hồi lại mình
+
+  if (this.config.credits !== "ManhG") { 
+    return api.sendMessage("Sai credits!", threadID, messageID);
   }
-  var dataThread = (await Threads.getData(threadID));
-  var data = dataThread.data; 
+
+  function sendReply(message) {
+    // Gửi tin nhắn với tệp đính kèm từ mảng global.a và thu hồi sau 30 giây
+    api.sendMessage(
+      { body: `${message}\n\n🔔 Ghi chú: Tin nhắn này sẽ tự thu hồi sau 30 giây`, attachment: global.a.splice(0, 1) },
+      threadID,
+      (error, info) => {
+        if (error) return;
+        // Đặt thời gian 30 giây để thu hồi tin nhắn
+        setTimeout(() => {
+          api.unsendMessage(info.messageID);
+        }, 30000);
+      }
+    );
+  }
+
+  const dataThread = await Threads.getData(threadID);
+  const data = dataThread.data; 
   const threadSetting = global.data.threadData.get(parseInt(threadID)) || {};
 
-  var arr = ["prefix","dùng kiểu gì","prefix là gì", "dấu lệnh", "dùng như nào","pre", "dùng sao"];
-  arr.forEach(i => {
-    let str = i[0].toUpperCase() + i.slice(1);
-    if (body === i.toUpperCase() | body === i | str === body) {
-		const prefix = threadSetting.PREFIX || global.config.PREFIX;
-      if (data.PREFIX == null) {
-        return out(`┏━━━━━━━━━━━━━━━━━━━━┓\n┣➤ Prefix hệ thống: [ ${prefix} ]\n┣➤ Bạn có thể xài prefix [ ${prefix} ] với nhóm hiện tại.\n┗━━━━━━━━━━━━━━━━━━━━┛\n`)
-      }
-      else return out('┏━━━━━━━━━━━━━━━━━━━━┓\n┣➤ Prefix hiện tại của nhóm: [ ' + data.PREFIX + ' ]\n┣➤ Prefix mặc định của hệ thống: [ ' + prefix + ` ]\n┗━━━━━━━━━━━━━━━━━━━━┛\n`)
-    }
+  const triggers = ["mpre", "mprefix", "prefix", "dấu lệnh", "prefix của bot là gì", "daulenh", "Lunar"];
+  const prefixGroup = threadSetting.PREFIX || global.config.PREFIX;
+  const totalCommands = global.client.commands.size; // Tổng số lệnh bot hiện có
+  const totalUsers = global.data.allUserID.length; // Tổng số người dùng bot
+  const totalGroups = global.data.allThreadID.length; // Tổng số nhóm sử dụng bot
 
+  // Lấy thời gian hiện tại với múi giờ Việt Nam (UTC+7)
+  const currentDate = new Date();
+  const options = { timeZone: 'Asia/Ho_Chi_Minh', hour12: false };
+  const time = currentDate.toLocaleTimeString('vi-VN', options);
+  const date = currentDate.toLocaleDateString('vi-VN', options);
+
+  const responseTemplate = `==== [ PREFIX BOT ] ====
+──────────────────
+✏️ Prefix của nhóm: ${prefixGroup}
+📎 Prefix hệ thống: ${global.config.PREFIX}
+📝 Tổng có: ${totalCommands} lệnh
+👥 Tổng người dùng bot: ${totalUsers}
+🏘️ Tổng nhóm: ${totalGroups}
+──────────────────
+⏰ Time: ${time} || ${date}`;
+
+  triggers.forEach(trigger => {
+    const triggerFormatted = new RegExp(`^${trigger}$`, "i"); // Tạo biểu thức chính quy để so khớp không phân biệt chữ hoa chữ thường
+    if (triggerFormatted.test(body)) {
+      return sendReply(responseTemplate);
+    }
   });
 };
 
-module.exports.run = async({ event, api }) => {
-    return api.sendMessage("biết prefix r còn nhắn cái đéo j =))", event.threadID)
-}
+module.exports.run = async ({ event, api }) => {
+  return api.sendMessage("Đã xảy ra lỗi", event.threadID);
+};
